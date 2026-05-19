@@ -21,7 +21,7 @@ export default function AdminDashboard() {
   const [isProductModalOpen, setIsProductModalOpen] = useState(false);
   const [editingProductId, setEditingProductId] = useState<string | null>(null);
   const [productForm, setProductForm] = useState({
-    name: '', type: 'Black Opal', price: '', description: '', image: '', origin: 'Lightning Ridge'
+    name: '', type: 'Black Opal', price: '', description: '', image: '', images: [] as string[], origin: 'Lightning Ridge'
   });
   const [savingProduct, setSavingProduct] = useState(false);
 
@@ -91,12 +91,13 @@ export default function AdminDashboard() {
         price: product.price.toString(),
         description: product.description,
         image: product.image,
+        images: product.images || (product.image ? [product.image] : []),
         origin: product.origin || 'Lightning Ridge'
       });
     } else {
       setEditingProductId(null);
       setProductForm({
-        name: '', type: 'Black Opal', price: '', description: '', image: '', origin: 'Lightning Ridge'
+        name: '', type: 'Black Opal', price: '', description: '', image: '', images: [], origin: 'Lightning Ridge'
       });
     }
     setIsProductModalOpen(true);
@@ -114,7 +115,8 @@ export default function AdminDashboard() {
         type: productForm.type,
         price: priceNum,
         description: productForm.description,
-        image: productForm.image,
+        image: productForm.images.length > 0 ? productForm.images[0] : '',
+        images: productForm.images,
         origin: productForm.origin,
         updatedAt: Date.now()
       };
@@ -568,8 +570,8 @@ export default function AdminDashboard() {
                                 onChange={(e) => {
                                   const file = e.target.files?.[0];
                                   if (file) {
-                                    if (file.size > 1000000) {
-                                      alert("File is too large! Please select a file under 1MB.");
+                                    if (file.size > 500000) {
+                                      alert("File is too large! Please select a file under 500KB to ensure successful storage.");
                                       return;
                                     }
                                     const reader = new FileReader();
@@ -687,45 +689,73 @@ export default function AdminDashboard() {
                   />
                 </div>
 
-                <div>
-                  <label className="block text-[11px] uppercase tracking-[0.1em] font-medium text-[#1a1a1a]/70 mb-2">Primary Asset (Image/Video)</label>
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-[0.1em] font-medium text-[#1a1a1a]/70 mb-2">Media Assets (Images/Videos)</label>
                   <div className="relative border-2 border-dashed border-[#1a1a1a]/20 rounded-sm p-4 text-center hover:bg-gray-50 transition-colors">
                     <input 
                       type="file" 
                       id="product-img-upload"
                       accept="image/*,video/*"
+                      multiple
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                       onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) {
-                          if (file.size > 1000000) {
-                            alert("File is too large! Please select a file under 1MB.");
-                            return;
+                        const files = Array.from(e.target.files || []);
+                        if (files.length > 0) {
+                          const newImages: string[] = [...productForm.images];
+                          let tooLarge = false;
+                          
+                          const readers = files.map(file => {
+                            if (file.size > 500000) {
+                              tooLarge = true;
+                              return null;
+                            }
+                            return new Promise<string>((resolve) => {
+                              const reader = new FileReader();
+                              reader.onloadend = () => resolve(reader.result as string);
+                              reader.readAsDataURL(file);
+                            });
+                          }).filter(Boolean) as Promise<string>[];
+
+                          if (tooLarge) {
+                            alert("One or more files were too large and skipped. Please select files under 500KB.");
                           }
-                          const reader = new FileReader();
-                          reader.onloadend = () => {
-                            setProductForm({...productForm, image: reader.result as string});
-                          };
-                          reader.readAsDataURL(file);
+
+                          Promise.all(readers).then(results => {
+                             setProductForm({...productForm, images: [...newImages, ...results]});
+                          });
                         }
                       }}
                     />
                     <div className="pointer-events-none">
-                      <p className="text-xs text-[#1a1a1a]/60">Click or drag file to upload</p>
-                      <p className="text-[9px] text-[#1a1a1a]/40 mt-1">PNG, JPG, MP4 under 1MB</p>
+                      <p className="text-xs text-[#1a1a1a]/60">Click or drag files to upload</p>
+                      <p className="text-[9px] text-[#1a1a1a]/40 mt-1">PNG, JPG, MP4 under 500KB per file</p>
                     </div>
                   </div>
                 </div>
 
-                {productForm.image && (
-                  <div className="md:col-span-2 p-4 bg-gray-50 flex items-center justify-center border border-[#1a1a1a]/10 rounded-sm mt-2">
-                    <div className="max-w-[200px] rounded-sm overflow-hidden shadow-sm">
-                      {productForm.image.startsWith('data:video') ? (
-                        <video src={productForm.image} className="w-full h-auto" autoPlay loop muted />
-                      ) : (
-                        <img src={productForm.image} alt="Preview" className="w-full h-auto object-cover" />
-                      )}
-                    </div>
+                {productForm.images.length > 0 && (
+                  <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4 bg-gray-50 border border-[#1a1a1a]/10 rounded-sm mt-2">
+                    {productForm.images.map((img, idx) => (
+                       <div key={idx} className="relative aspect-square rounded-sm overflow-hidden shadow-sm border border-[#1a1a1a]/10 group">
+                         {img.startsWith('data:video') ? (
+                           <video src={img} className="w-full h-full object-cover" autoPlay loop muted />
+                         ) : (
+                           <img src={img} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />
+                         )}
+                         <button 
+                           type="button"
+                           title="Remove this asset"
+                           onClick={() => {
+                             const updated = [...productForm.images];
+                             updated.splice(idx, 1);
+                             setProductForm({...productForm, images: updated});
+                           }}
+                           className="absolute top-1 right-1 bg-white/90 text-red-600 p-1.5 rounded-sm opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-white"
+                         >
+                           <X size={14} />
+                         </button>
+                       </div>
+                    ))}
                   </div>
                 )}
               </div>

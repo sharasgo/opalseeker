@@ -19,12 +19,13 @@ export default function ProductPage() {
   const [loading, setLoading] = useState(true);
   const { addToCart } = useCart();
   const [adding, setAdding] = useState(false);
+  const [activeImageIdx, setActiveImageIdx] = useState(0);
 
   useEffect(() => {
     const fetchProduct = async () => {
       if (!id) return;
       try {
-        const docRef = doc(db, 'products', id);
+        const docRef = doc(db, 'products', id as string);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
           setProduct({ id: docSnap.id, ...docSnap.data() });
@@ -75,6 +76,9 @@ export default function ProductPage() {
     );
   }
 
+  const images: string[] = product.images?.length > 0 ? product.images : (product.image ? [product.image] : []);
+  const activeMedia = images[activeImageIdx] || '';
+
   return (
     <main className="min-h-screen bg-[#fcfbf9] text-[#1a1a1a]">
       <NavBar />
@@ -90,25 +94,44 @@ export default function ProductPage() {
 
       <div className="grid grid-cols-1 md:grid-cols-2">
         {/* Product Image Panel */}
-        <div className="relative min-h-[50vh] md:min-h-[85vh] border-b md:border-b-0 md:border-r border-[#1a1a1a]/10 bg-[#f5f2ed] p-12 md:p-24 flex items-center justify-center group overflow-hidden">
-          <div className="relative w-full aspect-square max-w-2xl mx-auto">
-            {product.image?.startsWith('data:video') ? (
+        <div className="border-b md:border-b-0 md:border-r border-[#1a1a1a]/10 bg-[#f5f2ed] p-8 md:p-16 flex flex-col items-center justify-center group overflow-hidden">
+          <div className="relative w-full aspect-square max-w-xl mx-auto flex items-center justify-center">
+            {activeMedia?.startsWith('data:video') ? (
               <video 
-                src={product.image} 
+                src={activeMedia} 
                 autoPlay loop muted playsInline controls
                 className="w-full h-full object-contain"
               />
             ) : (
-              <Image
-                src={product.image}
-                alt={product.name}
-                fill
-                className="object-contain"
-                priority
-                sizes="(max-width: 768px) 100vw, 50vw"
-              />
+              activeMedia && (
+                <Image
+                  src={activeMedia}
+                  alt={product.name}
+                  fill
+                  className="object-contain"
+                  priority
+                  sizes="(max-width: 768px) 100vw, 50vw"
+                />
+              )
             )}
           </div>
+          {images.length > 1 && (
+            <div className="flex gap-4 overflow-x-auto w-full mt-12 py-2 max-w-xl max-h-32 justify-center">
+              {images.map((media, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveImageIdx(idx)}
+                  className={`relative w-20 h-20 shrink-0 border border-[#1a1a1a]/10 overflow-hidden rounded-sm transition-all shadow-sm ${idx === activeImageIdx ? 'opacity-100 ring-1 ring-[#1a1a1a]' : 'opacity-50 hover:opacity-100'}`}
+                >
+                  {media?.startsWith('data:video') ? (
+                     <video src={media} className="w-full h-full object-cover" />
+                  ) : (
+                    <img src={media} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                  )}
+                </button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Product Details Panel */}

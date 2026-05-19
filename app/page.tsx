@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion, useScroll, useTransform } from 'motion/react';
 import NavBar from '@/components/NavBar';
 import ProductCard from '@/components/ProductCard';
 import { db } from '@/lib/firebase';
@@ -65,27 +66,61 @@ export default function Home() {
         
         <div className="relative z-10 w-full max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-8 h-full">
           <div className="max-w-2xl mt-auto pb-8 md:pb-0">
-            <p className="text-[10px] md:text-xs text-white/70 uppercase tracking-[0.2em] mb-6">Established 1961</p>
-            <h1 className="text-5xl md:text-7xl lg:text-[110px] font-serif text-white font-light leading-[0.85] tracking-tight mb-8">
+            <motion.p 
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.2 }}
+              className="text-[10px] md:text-xs text-white/70 uppercase tracking-[0.2em] mb-6"
+            >
+              Established 1961
+            </motion.p>
+            <motion.h1 
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.3 }}
+              className="text-5xl md:text-7xl lg:text-[110px] font-serif text-white font-light leading-[0.85] tracking-tight mb-8"
+            >
               {homeContent.heroTitleLine1.trimEnd().split('\n').map((line: string, i: number, arr: any[]) => <React.Fragment key={i}>{line}{i < arr.length - 1 && <br/>}</React.Fragment>)}
               <br />
               <span className="italic opacity-90">{homeContent.heroTitleLine2}</span>
-            </h1>
-            <p className="text-md md:text-lg text-white/80 font-light max-w-lg mb-10 leading-relaxed">
+            </motion.h1>
+            <motion.p 
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.5 }}
+              className="text-md md:text-lg text-white/80 font-light max-w-lg mb-10 leading-relaxed"
+            >
               {homeContent.heroSubtitle}
-            </p>
-            <Link href="/collection" className="inline-flex items-center justify-center border border-white/40 text-white px-8 py-4 uppercase text-xs tracking-[0.15em] hover:bg-white hover:text-black transition-colors rounded-full backdrop-blur-sm">
-              Discover the Collection
-            </Link>
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1, delay: 0.7 }}
+            >
+              <Link href="/collection" className="inline-flex items-center justify-center border border-white/40 text-white px-8 py-4 uppercase text-xs tracking-[0.15em] hover:bg-white hover:text-black transition-colors rounded-full backdrop-blur-sm">
+                Discover the Collection
+              </Link>
+            </motion.div>
           </div>
-          <div className="hidden lg:block relative writing-vertical-rl text-white/50 text-[10px] tracking-[0.3em] font-sans h-full text-right pb-12 rotate-180">
+          <motion.div 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 2, delay: 1 }}
+            className="hidden lg:block relative writing-vertical-rl text-white/50 text-[10px] tracking-[0.3em] font-sans h-full text-right pb-12 rotate-180"
+          >
             PREMIUM LIGHTNING RIDGE STONES
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Categories Grid - Recipe 12 Style */}
-      <section className="border-b border-[#1a1a1a]/20 grid grid-cols-2 md:grid-cols-4 bg-[#fcfbf9]">
+      <motion.section 
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        viewport={{ once: true, margin: "-100px" }}
+        transition={{ duration: 1 }}
+        className="border-b border-[#1a1a1a]/20 grid grid-cols-2 md:grid-cols-4 bg-[#fcfbf9]"
+      >
         <Link href="/collection" className="flex flex-col justify-between aspect-square md:aspect-[3/2] border-r border-b md:border-b-0 border-[#1a1a1a]/10 p-6 md:p-10 group hover:bg-[#1a1a1a] hover:text-white transition-colors duration-300">
           <span className="text-[10px] uppercase tracking-[0.2em] opacity-50 group-hover:opacity-70">01</span>
           <div>
@@ -114,30 +149,48 @@ export default function Home() {
              <p className="text-[10px] uppercase tracking-[0.2em] mt-4 opacity-60 group-hover:opacity-80">Learn more</p>
           </div>
         </Link>
-      </section>
+      </motion.section>
 
       {/* Featured Collection */}
-      <section className="py-12 md:py-16 px-6 md:px-12 max-w-[1800px] mx-auto border-b border-[#1a1a1a]/20">
-        <div className="flex flex-col md:flex-row justify-between items-baseline mb-16 gap-6">
+      <section className="py-16 md:py-32 px-6 md:px-12 max-w-[1800px] mx-auto border-b border-[#1a1a1a]/20 overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col md:flex-row justify-between items-baseline mb-16 gap-6"
+        >
           <h2 className="text-4xl md:text-6xl font-serif text-[#1a1a1a] font-light tracking-tight">
             Latest <span className="italic tracking-normal">Discoveries</span>
           </h2>
           <Link href="/collection" className="text-xs uppercase tracking-[0.15em] text-[#1a1a1a]/70 hover:text-[#1a1a1a] border-b border-[#1a1a1a]/20 pb-1 inline-block transition-colors">
             View the Collection
           </Link>
-        </div>
+        </motion.div>
 
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-16">
+        <motion.div 
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1, delay: 0.2 }}
+          className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-16"
+        >
           {products.slice(0, 5).map(product => (
             <ProductCard key={product.id} product={product} />
           ))}
-        </div>
+        </motion.div>
       </section>
 
       {/* Lustre & Editorial Section */}
-      <section className="bg-[#1a1a1a] text-[#fcfbf9]">
+      <section className="bg-[#1a1a1a] text-[#fcfbf9] overflow-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-2 border-b border-[#fcfbf9]/20">
-          <div className="p-12 md:p-16 flex flex-col justify-center">
+          <motion.div 
+            initial={{ opacity: 0, x: -30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="p-12 md:p-16 xl:p-24 flex flex-col justify-center"
+          >
             <p className="text-[10px] uppercase tracking-[0.2em] mb-8 text-[#fcfbf9]/50">Exclusive Collection</p>
             <h2 className="font-serif text-5xl md:text-7xl lg:text-[80px] font-light mb-10 leading-[0.9]">
               Lustre <br /> <span className="italic opacity-80">Jewelry</span>
@@ -150,27 +203,49 @@ export default function Home() {
                 Explore Lustre
               </Link>
             </div>
-          </div>
+          </motion.div>
           <div className="relative min-h-[500px] lg:min-h-full border-t lg:border-t-0 lg:border-l border-[#fcfbf9]/20 overflow-hidden">
-            <Image 
-              src="https://picsum.photos/seed/lustrek/1000/1200" 
-              alt="Lustre Opal Jewelry" 
-              fill 
-              className="object-cover opacity-90 transition-transform duration-[5s] hover:scale-105"
-            />
+            <motion.div
+              initial={{ scale: 1.1 }}
+              whileInView={{ scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 2, ease: "easeOut" }}
+              className="absolute inset-0 w-full h-full"
+            >
+              <Image 
+                src="https://picsum.photos/seed/lustrek/1000/1200" 
+                alt="Lustre Opal Jewelry" 
+                fill 
+                className="object-cover opacity-90 transition-transform duration-[5s] hover:scale-105"
+              />
+            </motion.div>
           </div>
         </div>
         
         <div className="grid grid-cols-1 lg:grid-cols-2">
           <div className="relative min-h-[500px] lg:min-h-full border-b lg:border-b-0 lg:border-r border-[#fcfbf9]/20 order-2 lg:order-1 overflow-hidden">
-             <Image 
-                src="https://picsum.photos/seed/cuttingk/1000/1200" 
-                alt="Master the Art of Opal Cutting" 
-                fill 
-                className="object-cover opacity-80 grayscale mix-blend-luminosity hover:grayscale-0 transition-all duration-[3s]"
-             />
+             <motion.div
+                initial={{ scale: 1.1 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 2, ease: "easeOut" }}
+                className="absolute inset-0 w-full h-full"
+             >
+               <Image 
+                  src="https://picsum.photos/seed/cuttingk/1000/1200" 
+                  alt="Master the Art of Opal Cutting" 
+                  fill 
+                  className="object-cover opacity-80 grayscale mix-blend-luminosity hover:grayscale-0 transition-all duration-[3s]"
+               />
+             </motion.div>
           </div>
-          <div className="p-12 md:p-16 flex flex-col justify-center order-1 lg:order-2">
+          <motion.div 
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 1, ease: [0.16, 1, 0.3, 1] }}
+            className="p-12 md:p-16 xl:p-24 flex flex-col justify-center order-1 lg:order-2"
+          >
             <p className="text-[10px] uppercase tracking-[0.2em] mb-8 text-[#fcfbf9]/50">Education</p>
             <h2 className="font-serif text-5xl md:text-7xl lg:text-[80px] font-light mb-10 leading-[0.9]">
               Art of <br /> <span className="italic opacity-80">Cutting</span>
@@ -183,22 +258,28 @@ export default function Home() {
                 Start Learning
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
       </section>
 
       {/* Want to Learn About Opal? Section */}
-      <section className="py-12 md:py-16 px-6 bg-[#fcfbf9] border-b border-[#1a1a1a]/10">
-        <div className="max-w-2xl mx-auto text-center">
+      <section className="py-24 md:py-32 px-6 bg-[#fcfbf9] border-b border-[#1a1a1a]/10 overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1 }}
+          className="max-w-2xl mx-auto text-center"
+        >
           <h2 className="text-4xl md:text-6xl font-serif text-[#1a1a1a] mb-8 font-light">Join the <span className="italic">Inner Circle</span></h2>
           <p className="text-[#1a1a1a]/60 mb-12 font-light text-lg md:text-xl px-4">
             Get exclusive early access to magnificent new stones, masterclasses, and stories from Lightning Ridge.
           </p>
-          <form className="flex flex-col sm:flex-row max-w-xl mx-auto">
+          <form className="flex flex-col sm:flex-row max-w-xl mx-auto items-center">
             <input 
               type="email" 
               placeholder="YOUR EMAIL ADDRESS" 
-              className="flex-1 bg-transparent border-b border-[#1a1a1a]/30 px-4 py-4 focus:outline-none focus:border-[#1a1a1a] transition-colors rounded-none placeholder:text-[#1a1a1a]/40 text-center sm:text-left text-xs tracking-[0.1em]"
+              className="flex-1 w-full bg-transparent border-b border-[#1a1a1a]/30 px-4 py-4 focus:outline-none focus:border-[#1a1a1a] transition-colors rounded-none placeholder:text-[#1a1a1a]/40 text-center sm:text-left text-xs tracking-[0.1em]"
               required
             />
             <button 
@@ -208,12 +289,18 @@ export default function Home() {
               Sign Up
             </button>
           </form>
-        </div>
+        </motion.div>
       </section>
 
       {/* Info Section */}
-      <section className="bg-[#1a1a1a] text-[#fcfbf9] py-12 md:py-16 px-6">
-        <div className="max-w-3xl mx-auto text-center">
+      <section className="bg-[#1a1a1a] text-[#fcfbf9] py-24 md:py-32 px-6 overflow-hidden">
+        <motion.div 
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 1 }}
+          className="max-w-3xl mx-auto text-center"
+        >
           <h2 className="text-[10px] uppercase tracking-[0.3em] text-[#fcfbf9]/50 mb-12">The Founder</h2>
           <p className="text-[#fcfbf9]/80 mb-16 leading-relaxed text-2xl md:text-4xl font-serif font-light whitespace-pre-wrap">
             {homeContent.founderMessage}
@@ -221,7 +308,7 @@ export default function Home() {
           <Link href="/about" className="inline-block border-b border-[#fcfbf9]/40 hover:border-[#fcfbf9] pb-1 uppercase tracking-[0.2em] text-[10px] transition-colors">
             Read My Story
           </Link>
-        </div>
+        </motion.div>
       </section>
 
       {/* Footer */}
