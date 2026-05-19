@@ -69,7 +69,7 @@ service cloud.firestore {
              data.name is string && data.name.size() > 0 && data.name.size() <= 256 &&
              data.description is string && data.description.size() >= 0 && data.description.size() <= 4000 &&
              data.price is number && data.price >= 0 &&
-             data.image is string && data.image.size() >= 0 && data.image.size() <= 1048576 &&
+             data.image is string && data.image.size() >= 0 && data.image.size() <= 20480000 &&
              (!data.keys().hasAll(['images']) || (data.images is list && data.images.size() <= 10)) &&
              data.origin is string && data.origin.size() > 0 && data.origin.size() <= 256 &&
              data.type is string && data.type.size() > 0 && data.type.size() <= 256 &&

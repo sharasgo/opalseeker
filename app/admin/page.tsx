@@ -570,8 +570,8 @@ export default function AdminDashboard() {
                                 onChange={(e) => {
                                   const file = e.target.files?.[0];
                                   if (file) {
-                                    if (file.size > 500000) {
-                                      alert("File is too large! Please select a file under 500KB to ensure successful storage.");
+                                    if (file.size > 1048576) {
+                                      alert("File is too large! Please select a file under 1MB to ensure successful storage.");
                                       return;
                                     }
                                     const reader = new FileReader();
@@ -705,7 +705,7 @@ export default function AdminDashboard() {
                           let tooLarge = false;
                           
                           const readers = files.map(file => {
-                            if (file.size > 500000) {
+                            if (file.size > 1048576) { // 1MB limit
                               tooLarge = true;
                               return null;
                             }
@@ -717,7 +717,7 @@ export default function AdminDashboard() {
                           }).filter(Boolean) as Promise<string>[];
 
                           if (tooLarge) {
-                            alert("One or more files were too large and skipped. Please select files under 500KB.");
+                            alert("One or more files were too large and skipped. Please select files under 1MB.");
                           }
 
                           Promise.all(readers).then(results => {
@@ -728,7 +728,7 @@ export default function AdminDashboard() {
                     />
                     <div className="pointer-events-none">
                       <p className="text-xs text-[#1a1a1a]/60">Click or drag files to upload</p>
-                      <p className="text-[9px] text-[#1a1a1a]/40 mt-1">PNG, JPG, MP4 under 500KB per file</p>
+                      <p className="text-[9px] text-[#1a1a1a]/40 mt-1">PNG, JPG, MP4 under 1MB per file</p>
                     </div>
                   </div>
                 </div>
