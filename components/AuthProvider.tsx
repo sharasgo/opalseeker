@@ -67,8 +67,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = async () => {
-    const provider = new GoogleAuthProvider();
-    await signInWithPopup(auth, provider);
+    try {
+      const provider = new GoogleAuthProvider();
+      await signInWithPopup(auth, provider);
+    } catch (error: any) {
+      console.error('Login error:', error);
+      if (error.code === 'auth/popup-closed-by-user') {
+        // Ignored, user closed it
+      } else {
+        alert("Sign in failed. Note: If you are viewing this within the AI Studio embedded preview, Google Sign-In popups might be blocked by your browser's third-party cookie settings. Please use the 'Open in new tab' button at the top right to open the app in a new tab and try again.\n\nError details: " + error.message);
+      }
+    }
   };
 
   const logout = async () => {
