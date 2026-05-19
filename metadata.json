@@ -1,0 +1,6 @@
+{
+  "name": "OpalSeeker Marketplace",
+  "description": "An elegant e-commerce platform for showcasing and selling premium Australian Opals, built with Next.js and Stripe.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
