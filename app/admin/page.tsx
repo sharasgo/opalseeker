@@ -309,7 +309,7 @@ export default function AdminDashboard() {
                       <div className="bg-white p-6 border border-[#1a1a1a]/5 shadow-sm rounded-sm">
                          <div className="text-[10px] uppercase tracking-[0.1em] text-[#1a1a1a]/50 mb-4 flex items-center gap-2"><LayoutDashboard size={14}/> Total Revenue</div>
                          <div className="text-4xl font-serif font-light">
-                           ${orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0).toLocaleString()}
+                           €{orders.reduce((sum, o) => sum + (o.totalAmount || 0), 0).toLocaleString()}
                          </div>
                          <div className="text-xs text-green-600 mt-2 font-medium">All time</div>
                       </div>
@@ -333,7 +333,7 @@ export default function AdminDashboard() {
                                 </div>
                               </div>
                               <div className="text-right">
-                                <p className="text-sm font-semibold">${order.totalAmount?.toLocaleString()}</p>
+                                <p className="text-sm font-semibold">€{order.totalAmount?.toLocaleString()}</p>
                                 <p className="text-xs text-[#1a1a1a]/50">{new Date(order.createdAt).toLocaleDateString()}</p>
                               </div>
                             </div>
@@ -373,7 +373,7 @@ export default function AdminDashboard() {
                                 <td className="px-8 py-4 font-medium text-[#1a1a1a]">#{order.id.slice(0, 8)}...</td>
                                 <td className="px-8 py-4 text-[#1a1a1a]/60">{new Date(order.createdAt).toLocaleDateString()}</td>
                                 <td className="px-8 py-4 text-[#1a1a1a]/60">{order.userId.slice(0, 15)}...</td>
-                                <td className="px-8 py-4 text-right font-medium">${order.totalAmount?.toLocaleString()}</td>
+                                <td className="px-8 py-4 text-right font-medium">€{order.totalAmount?.toLocaleString()}</td>
                                 <td className="px-8 py-4">
                                   <select
                                     value={order.status}
@@ -453,7 +453,7 @@ export default function AdminDashboard() {
                                   </span>
                                 </td>
                                 <td className="px-8 py-4 text-right font-medium">
-                                  ${product.price.toLocaleString()}
+                                  €{product.price.toLocaleString()}
                                 </td>
                                 <td className="px-8 py-4">
                                   <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
@@ -573,16 +573,50 @@ export default function AdminDashboard() {
                                   if (file) {
                                     setSavingHomeContent(true);
                                     try {
-                                      const storageRef = ref(storage, `home/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.\-_]/g, '')}`);
-                                      await uploadBytes(storageRef, file);
-                                      const downloadURL = await getDownloadURL(storageRef);
-                                      const finalURL = file.type.startsWith('video/') ? downloadURL + '#video' : downloadURL;
-                                      setHomeContent({...homeContent, heroBackgroundImage: finalURL});
+                                      if (file.type.startsWith('video/')) {
+                                          if (file.size > 1500000) {
+                                              alert("Videos uploaded directly must be under 1.5MB. Use the Link input for larger videos.");
+                                              setSavingHomeContent(false);
+                                              return;
+                                          }
+                                          const reader = new FileReader();
+                                          reader.onloadend = () => {
+                                              setHomeContent({...homeContent, heroBackgroundImage: (reader.result as string) + '#video'});
+                                              setSavingHomeContent(false);
+                                          };
+                                          reader.readAsDataURL(file);
+                                      } else {
+                                          const reader = new FileReader();
+                                          reader.onload = (event) => {
+                                              const img = new window.Image();
+                                              img.onload = () => {
+                                                  const canvas = document.createElement('canvas');
+                                                  let width = img.width;
+                                                  let height = img.height;
+                                                  const max_size = 1920;
+                                                  if (width > height && width > max_size) {
+                                                      height *= max_size / width;
+                                                      width = max_size;
+                                                  } else if (height > max_size) {
+                                                      width *= max_size / height;
+                                                      height = max_size;
+                                                  }
+                                                  canvas.width = width;
+                                                  canvas.height = height;
+                                                  const ctx = canvas.getContext('2d');
+                                                  if (ctx) ctx.drawImage(img, 0, 0, width, height);
+                                                  setHomeContent({...homeContent, heroBackgroundImage: canvas.toDataURL('image/jpeg', 0.8)});
+                                                  setSavingHomeContent(false);
+                                              };
+                                              img.src = event.target?.result as string;
+                                          };
+                                          reader.readAsDataURL(file);
+                                      }
                                     } catch (error) {
                                       console.error("Upload error:", error);
-                                      alert("Failed to upload media to Storage.");
-                                    } finally {
+                                      alert("Failed to read media.");
                                       setSavingHomeContent(false);
+                                    } finally {
                                       e.target.value = '';
                                     }
                                   }
@@ -592,8 +626,33 @@ export default function AdminDashboard() {
                                 htmlFor="hero-img-upload" 
                                 className="flex items-center justify-center w-full bg-white border border-[#1a1a1a]/20 px-4 py-2 cursor-pointer text-[11px] font-medium uppercase tracking-wider hover:bg-gray-50 transition-colors rounded-sm"
                               >
-                                {savingHomeContent ? "Uploading..." : "Replace Media"}
+                                {savingHomeContent ? "Processing..." : "Upload File"}
                               </label>
+                            </div>
+                            <div className="mt-2 flex gap-2">
+                                <input 
+                                  type="text" 
+                                  placeholder="Or paste media URL (e.g. YouTube, Imgur, any file link)" 
+                                  className="flex-1 px-3 py-2 border border-[#1a1a1a]/20 bg-transparent text-sm focus:outline-none focus:border-[#1a1a1a] rounded-sm"
+                                  id="hero-url-input"
+                                />
+                                <button
+                                  type="button"
+                                  className="px-4 py-2 bg-[#1a1a1a] text-white text-[11px] uppercase tracking-wider font-medium hover:bg-black transition-colors rounded-sm shrink-0"
+                                  onClick={() => {
+                                      const el = document.getElementById('hero-url-input') as HTMLInputElement;
+                                      if (el && el.value) {
+                                          let finalUrl = el.value;
+                                          if (finalUrl.match(/\.(mp4|webm|mov)$/i) || finalUrl.includes('youtube.com') || finalUrl.includes('vimeo')) {
+                                              finalUrl += '#video';
+                                          }
+                                          setHomeContent({...homeContent, heroBackgroundImage: finalUrl});
+                                          el.value = '';
+                                      }
+                                  }}
+                                >
+                                    Add Link
+                                </button>
                             </div>
                           </div>
                         </div>
@@ -663,7 +722,7 @@ export default function AdminDashboard() {
                 </div>
 
                 <div>
-                  <label className="block text-[11px] uppercase tracking-[0.1em] font-medium text-[#1a1a1a]/70 mb-2">Listing Price ($)</label>
+                  <label className="block text-[11px] uppercase tracking-[0.1em] font-medium text-[#1a1a1a]/70 mb-2">Listing Price (€)</label>
                   <input 
                     required type="number" step="0.01" min="0"
                     value={productForm.price} 
@@ -709,32 +768,91 @@ export default function AdminDashboard() {
                         if (files.length > 0) {
                           setSavingProduct(true);
                           const newImages: string[] = [...productForm.images];
-                          try {
-                            for (const file of files) {
-                              const storageRef = ref(storage, `products/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.\-_]/g, '')}`);
-                              await uploadBytes(storageRef, file);
-                              const downloadURL = await getDownloadURL(storageRef);
-                              if (file.type.startsWith('video/')) {
-                                newImages.push(downloadURL + '#video');
-                              } else {
-                                newImages.push(downloadURL);
-                              }
+                          let tooLarge = false;
+                          
+                          const readers = files.map(file => {
+                            if (file.type.startsWith('video/')) {
+                               if (file.size > 1500000) { // 1.5MB hard limit for video
+                                 tooLarge = true;
+                                 return null;
+                               }
+                               return new Promise<string>((resolve) => {
+                                 const reader = new FileReader();
+                                 reader.onloadend = () => resolve((reader.result as string) + '#video');
+                                 reader.readAsDataURL(file);
+                               });
+                            } else {
+                               // Compress image
+                               return new Promise<string>((resolve) => {
+                                  const reader = new FileReader();
+                                  reader.onload = (event) => {
+                                    const img = new window.Image();
+                                    img.onload = () => {
+                                      const canvas = document.createElement('canvas');
+                                      let width = img.width;
+                                      let height = img.height;
+                                      const max_size = 1200;
+                                      if (width > height && width > max_size) {
+                                        height *= max_size / width;
+                                        width = max_size;
+                                      } else if (height > max_size) {
+                                        width *= max_size / height;
+                                        height = max_size;
+                                      }
+                                      canvas.width = width;
+                                      canvas.height = height;
+                                      const ctx = canvas.getContext('2d');
+                                      if (ctx) ctx.drawImage(img, 0, 0, width, height);
+                                      resolve(canvas.toDataURL('image/jpeg', 0.7)); // compress to JPEG 70%
+                                    };
+                                    img.src = event.target?.result as string;
+                                  };
+                                  reader.readAsDataURL(file);
+                               });
                             }
-                            setProductForm({...productForm, images: newImages});
-                          } catch (error: any) {
-                            console.error("Upload failed", error);
-                            alert("Failed to upload file(s): " + (error.message || error));
-                          } finally {
-                            setSavingProduct(false);
-                            if (e.target) e.target.value = '';
+                          }).filter(Boolean) as Promise<string>[];
+
+                          if (tooLarge) {
+                            alert("Videos must be under 1.5MB to be uploaded directly. Use the URL input for larger videos/files.");
                           }
+
+                          Promise.all(readers).then(results => {
+                             setProductForm({...productForm, images: [...newImages, ...results]});
+                             setSavingProduct(false);
+                             if (e.target) e.target.value = '';
+                          });
                         }
                       }}
                     />
                     <div className="pointer-events-none">
-                      <p className="text-xs text-[#1a1a1a]/60">{savingProduct ? "Uploading..." : "Click or drag files to upload"}</p>
-                      <p className="text-[9px] text-[#1a1a1a]/40 mt-1">Upload images or videos of any size</p>
+                      <p className="text-xs text-[#1a1a1a]/60">{savingProduct ? "Processing..." : "Click or drag files to upload"}</p>
+                      <p className="text-[9px] text-[#1a1a1a]/40 mt-1">Images auto-compressed | Videos under 1.5MB</p>
                     </div>
+                  </div>
+                  <div className="mt-2 flex gap-2">
+                      <input 
+                        type="text" 
+                        placeholder="Or paste an Image/Video URL for any file size" 
+                        className="flex-1 px-3 py-2 border border-[#1a1a1a]/20 bg-transparent text-sm focus:outline-none focus:border-[#1a1a1a] rounded-sm"
+                        id="product-url-input"
+                      />
+                      <button
+                        type="button"
+                        className="px-4 py-2 bg-[#1a1a1a] text-white text-[11px] uppercase tracking-wider font-medium hover:bg-black transition-colors rounded-sm shrink-0"
+                        onClick={() => {
+                            const el = document.getElementById('product-url-input') as HTMLInputElement;
+                            if (el && el.value) {
+                                let finalUrl = el.value;
+                                if (finalUrl.match(/\.(mp4|webm|mov)$/i) || finalUrl.includes('youtube.com') || finalUrl.includes('vimeo')) {
+                                    finalUrl += '#video';
+                                }
+                                setProductForm({ ...productForm, images: [...productForm.images, finalUrl] });
+                                el.value = '';
+                            }
+                        }}
+                      >
+                          Add Link
+                      </button>
                   </div>
                 </div>
 

@@ -89,7 +89,7 @@ export default function ProfilePage() {
                     <p>{new Date(order.createdAt).toLocaleDateString()}</p>
                   </div>
                   <div className="text-right">
-                    <p className="font-bold text-gray-900 mb-1">${order.totalAmount.toLocaleString()}</p>
+                    <p className="font-bold text-gray-900 mb-1">€{order.totalAmount.toLocaleString()}</p>
                     <p className="uppercase text-xs tracking-wider font-semibold text-[#cc6600]">{order.status}</p>
                   </div>
                 </div>
@@ -97,7 +97,7 @@ export default function ProfilePage() {
                   {order.items.map((item: any, idx: number) => (
                     <div key={idx} className="flex justify-between text-sm">
                       <span className="text-gray-700">{item.quantity}x {item.name}</span>
-                      <span className="text-gray-900 font-medium">${(item.price * item.quantity).toLocaleString()}</span>
+                      <span className="text-gray-900 font-medium">€{(item.price * item.quantity).toLocaleString()}</span>
                     </div>
                   ))}
                 </div>

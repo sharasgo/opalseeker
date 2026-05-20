@@ -42,7 +42,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
         
         <div className="mt-auto flex items-center justify-between border-t border-[#1a1a1a]/10 pt-4">
-          <span className="font-sans font-medium text-sm text-[#1a1a1a]">${product.price.toLocaleString('en-US')}</span>
+          <span className="font-sans font-medium text-sm text-[#1a1a1a]">€{product.price.toLocaleString('en-US')}</span>
           <button 
             onClick={(e) => {
               e.preventDefault();

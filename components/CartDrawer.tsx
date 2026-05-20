@@ -93,7 +93,7 @@ export default function CartDrawer() {
                     <p className="text-xs text-gray-500 mt-1 uppercase tracking-wide">{item.origin}</p>
                   </div>
                   <div className="mt-auto pt-4 flex items-center justify-between w-full">
-                    <span className="font-bold text-amber-600">${item.price.toLocaleString('en-US')}</span>
+                    <span className="font-bold text-amber-600">€{item.price.toLocaleString('en-US')}</span>
                     <div className="flex items-center gap-3 text-sm border border-gray-200 rounded px-2 py-1">
                       <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="text-gray-500 hover:text-black transition-colors">
                         <Minus size={14} />
@@ -114,7 +114,7 @@ export default function CartDrawer() {
           <div className="mt-auto pt-6 border-t border-gray-200">
             <div className="flex items-center justify-between mb-6">
               <span className="uppercase tracking-wider text-sm font-bold text-gray-500">Subtotal</span>
-              <span className="text-2xl font-bold">${cartTotal.toLocaleString('en-US')}</span>
+              <span className="text-2xl font-bold">€{cartTotal.toLocaleString('en-US')}</span>
             </div>
             <p className="text-xs text-gray-500 text-center mb-4">Shipping and taxes calculated at checkout.</p>
             <button 

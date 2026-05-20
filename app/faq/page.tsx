@@ -17,7 +17,7 @@ export default function FAQPage() {
           
           <div className="border-b border-gray-200 pb-6">
             <h3 className="font-bold text-xl mb-3 text-gray-900">Do you offer certificates of authenticity?</h3>
-            <p className="text-gray-600">Yes, every solid opal over $1,000 comes with a signed Certificate of Authenticity detailing the opal&apos;s weight, origin, type, and characteristics.</p>
+            <p className="text-gray-600">Yes, every solid opal over €1,000 comes with a signed Certificate of Authenticity detailing the opal&apos;s weight, origin, type, and characteristics.</p>
           </div>
           
           <div className="border-b border-gray-200 pb-6">

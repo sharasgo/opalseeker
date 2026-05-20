@@ -146,7 +146,7 @@ export default function ProductPage() {
           </h1>
           
           <div className="text-2xl md:text-3xl font-sans font-light mb-12 border-b border-[#1a1a1a]/10 pb-12">
-            ${product.price.toLocaleString('en-US')}
+            €{product.price.toLocaleString('en-US')}
           </div>
 
           <div className="prose prose-sm prose-neutral text-[#1a1a1a]/70 font-light mb-16 max-w-full">
