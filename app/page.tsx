@@ -45,7 +45,7 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative w-full h-[85vh] flex items-end pb-16 px-6 md:px-16 border-b border-[#1a1a1a]/20">
         <div className="absolute inset-0 z-0 overflow-hidden">
-          {homeContent.heroBackgroundImage.startsWith('data:video') ? (
+          {homeContent.heroBackgroundImage && (homeContent.heroBackgroundImage.startsWith('data:video') || homeContent.heroBackgroundImage.includes('#video')) ? (
             <video 
               src={homeContent.heroBackgroundImage} 
               autoPlay loop muted playsInline

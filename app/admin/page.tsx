@@ -3,8 +3,9 @@
 import React, { useEffect, useState } from 'react';
 import NavBar from '@/components/NavBar';
 import { useAuth } from '@/components/AuthProvider';
-import { db } from '@/lib/firebase';
+import { db, storage } from '@/lib/firebase';
 import { collection, getDocs, query, orderBy, doc, addDoc, updateDoc, deleteDoc } from 'firebase/firestore';
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { LayoutDashboard, ShoppingBag, Package, FileText, Settings, LogOut, Plus, Edit2, Trash2, X, ChevronRight } from 'lucide-react';
@@ -135,9 +136,9 @@ export default function AdminDashboard() {
       }
       setIsProductModalOpen(false);
       fetchData();
-    } catch (err) {
+    } catch (err: any) {
       console.error("Error saving product:", err);
-      alert("Failed to save product.");
+      alert("Failed to save product: " + (err.message || err));
     } finally {
       setSavingProduct(false);
     }
@@ -434,7 +435,7 @@ export default function AdminDashboard() {
                                 <td className="px-8 py-4">
                                   {product.image && (
                                     <div className="w-12 h-12 relative bg-[#f5f2ed] border border-[#1a1a1a]/5 rounded-sm overflow-hidden">
-                                      {product.image.startsWith('data:video') ? (
+                                      {product.image.startsWith('data:video') || product.image.includes('#video') ? (
                                         <video src={product.image} className="w-full h-full object-cover" />
                                       ) : (
                                         <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
@@ -553,7 +554,7 @@ export default function AdminDashboard() {
                             
                             {homeContent?.heroBackgroundImage && (
                               <div className="mb-4 rounded-sm overflow-hidden border border-[#1a1a1a]/10 bg-[#1a1a1a] aspect-video relative group">
-                                {homeContent.heroBackgroundImage.startsWith('data:video') ? (
+                                {homeContent.heroBackgroundImage.startsWith('data:video') || homeContent.heroBackgroundImage.includes('#video') ? (
                                   <video src={homeContent.heroBackgroundImage} className="w-full h-full object-cover" />
                                 ) : (
                                   <img src={homeContent.heroBackgroundImage} alt="Preview" className="w-full h-full object-cover" />
@@ -567,18 +568,23 @@ export default function AdminDashboard() {
                                 id="hero-img-upload"
                                 accept="image/*,video/*"
                                 className="hidden"
-                                onChange={(e) => {
+                                onChange={async (e) => {
                                   const file = e.target.files?.[0];
                                   if (file) {
-                                    if (file.size > 1048576) {
-                                      alert("File is too large! Please select a file under 1MB to ensure successful storage.");
-                                      return;
+                                    setSavingHomeContent(true);
+                                    try {
+                                      const storageRef = ref(storage, `home/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.\-_]/g, '')}`);
+                                      await uploadBytes(storageRef, file);
+                                      const downloadURL = await getDownloadURL(storageRef);
+                                      const finalURL = file.type.startsWith('video/') ? downloadURL + '#video' : downloadURL;
+                                      setHomeContent({...homeContent, heroBackgroundImage: finalURL});
+                                    } catch (error) {
+                                      console.error("Upload error:", error);
+                                      alert("Failed to upload media to Storage.");
+                                    } finally {
+                                      setSavingHomeContent(false);
+                                      e.target.value = '';
                                     }
-                                    const reader = new FileReader();
-                                    reader.onloadend = () => {
-                                      setHomeContent({...homeContent, heroBackgroundImage: reader.result as string});
-                                    };
-                                    reader.readAsDataURL(file);
                                   }
                                 }}
                               />
@@ -586,7 +592,7 @@ export default function AdminDashboard() {
                                 htmlFor="hero-img-upload" 
                                 className="flex items-center justify-center w-full bg-white border border-[#1a1a1a]/20 px-4 py-2 cursor-pointer text-[11px] font-medium uppercase tracking-wider hover:bg-gray-50 transition-colors rounded-sm"
                               >
-                                Replace Media
+                                {savingHomeContent ? "Uploading..." : "Replace Media"}
                               </label>
                             </div>
                           </div>
@@ -698,37 +704,36 @@ export default function AdminDashboard() {
                       accept="image/*,video/*"
                       multiple
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                      onChange={(e) => {
+                      onChange={async (e) => {
                         const files = Array.from(e.target.files || []);
                         if (files.length > 0) {
+                          setSavingProduct(true);
                           const newImages: string[] = [...productForm.images];
-                          let tooLarge = false;
-                          
-                          const readers = files.map(file => {
-                            if (file.size > 1048576) { // 1MB limit
-                              tooLarge = true;
-                              return null;
+                          try {
+                            for (const file of files) {
+                              const storageRef = ref(storage, `products/${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.\-_]/g, '')}`);
+                              await uploadBytes(storageRef, file);
+                              const downloadURL = await getDownloadURL(storageRef);
+                              if (file.type.startsWith('video/')) {
+                                newImages.push(downloadURL + '#video');
+                              } else {
+                                newImages.push(downloadURL);
+                              }
                             }
-                            return new Promise<string>((resolve) => {
-                              const reader = new FileReader();
-                              reader.onloadend = () => resolve(reader.result as string);
-                              reader.readAsDataURL(file);
-                            });
-                          }).filter(Boolean) as Promise<string>[];
-
-                          if (tooLarge) {
-                            alert("One or more files were too large and skipped. Please select files under 1MB.");
+                            setProductForm({...productForm, images: newImages});
+                          } catch (error: any) {
+                            console.error("Upload failed", error);
+                            alert("Failed to upload file(s): " + (error.message || error));
+                          } finally {
+                            setSavingProduct(false);
+                            if (e.target) e.target.value = '';
                           }
-
-                          Promise.all(readers).then(results => {
-                             setProductForm({...productForm, images: [...newImages, ...results]});
-                          });
                         }
                       }}
                     />
                     <div className="pointer-events-none">
-                      <p className="text-xs text-[#1a1a1a]/60">Click or drag files to upload</p>
-                      <p className="text-[9px] text-[#1a1a1a]/40 mt-1">PNG, JPG, MP4 under 1MB per file</p>
+                      <p className="text-xs text-[#1a1a1a]/60">{savingProduct ? "Uploading..." : "Click or drag files to upload"}</p>
+                      <p className="text-[9px] text-[#1a1a1a]/40 mt-1">Upload images or videos of any size</p>
                     </div>
                   </div>
                 </div>
@@ -737,7 +742,7 @@ export default function AdminDashboard() {
                   <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4 bg-gray-50 border border-[#1a1a1a]/10 rounded-sm mt-2">
                     {productForm.images.map((img, idx) => (
                        <div key={idx} className="relative aspect-square rounded-sm overflow-hidden shadow-sm border border-[#1a1a1a]/10 group">
-                         {img.startsWith('data:video') ? (
+                         {img.startsWith('data:video') || img.includes('#video') ? (
                            <video src={img} className="w-full h-full object-cover" autoPlay loop muted />
                          ) : (
                            <img src={img} alt={`Preview ${idx + 1}`} className="w-full h-full object-cover" />

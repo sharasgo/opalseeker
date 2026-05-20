@@ -12,7 +12,7 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <div className="group flex flex-col bg-transparent overflow-hidden text-left">
       <Link href={`/product/${product.id}`} className="relative w-full aspect-[4/5] bg-[#f5f2ed] cursor-pointer overflow-hidden block mb-6">
-        {product.image?.startsWith('data:video') ? (
+        {product.image?.startsWith('data:video') || product.image?.includes('#video') ? (
           <video 
             src={product.image} 
             autoPlay loop muted playsInline

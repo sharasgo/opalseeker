@@ -96,7 +96,7 @@ export default function ProductPage() {
         {/* Product Image Panel */}
         <div className="border-b md:border-b-0 md:border-r border-[#1a1a1a]/10 bg-[#f5f2ed] p-8 md:p-16 flex flex-col items-center justify-center group overflow-hidden">
           <div className="relative w-full aspect-square max-w-xl mx-auto flex items-center justify-center">
-            {activeMedia?.startsWith('data:video') ? (
+            {activeMedia?.startsWith('data:video') || activeMedia?.includes('#video') ? (
               <video 
                 src={activeMedia} 
                 autoPlay loop muted playsInline controls
@@ -123,7 +123,7 @@ export default function ProductPage() {
                   onClick={() => setActiveImageIdx(idx)}
                   className={`relative w-20 h-20 shrink-0 border border-[#1a1a1a]/10 overflow-hidden rounded-sm transition-all shadow-sm ${idx === activeImageIdx ? 'opacity-100 ring-1 ring-[#1a1a1a]' : 'opacity-50 hover:opacity-100'}`}
                 >
-                  {media?.startsWith('data:video') ? (
+                  {media?.startsWith('data:video') || media?.includes('#video') ? (
                      <video src={media} className="w-full h-full object-cover" />
                   ) : (
                     <img src={media} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />

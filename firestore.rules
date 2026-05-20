@@ -65,7 +65,6 @@ service cloud.firestore {
 
     function isValidProduct(data) {
       return data.keys().hasAll(['name', 'description', 'price', 'image', 'origin', 'type', 'createdAt', 'updatedAt']) &&
-             (data.keys().size() == 8 || (data.keys().size() == 9 && data.keys().hasAll(['images']))) &&
              data.name is string && data.name.size() > 0 && data.name.size() <= 256 &&
              data.description is string && data.description.size() >= 0 && data.description.size() <= 4000 &&
              data.price is number && data.price >= 0 &&
