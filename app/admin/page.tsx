@@ -9,6 +9,7 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { LayoutDashboard, ShoppingBag, Package, FileText, Settings, LogOut, Plus, Edit2, Trash2, X, ChevronRight } from 'lucide-react';
+import dynamic from 'next/dynamic';
 
 export default function AdminDashboard() {
   const { user, role, loading, login, logout } = useAuth();
@@ -734,13 +735,14 @@ export default function AdminDashboard() {
 
                 <div className="md:col-span-2">
                   <label className="block text-[11px] uppercase tracking-[0.1em] font-medium text-[#1a1a1a]/70 mb-2">Detailed Description</label>
-                  <textarea 
-                    required rows={4}
-                    value={productForm.description} 
-                    onChange={(e) => setProductForm({...productForm, description: e.target.value})}
-                    className="w-full bg-white border border-[#1a1a1a]/20 p-3 rounded-sm focus:outline-none focus:border-[#1a1a1a] focus:ring-1 focus:ring-[#1a1a1a] transition-all text-sm resize-none"
-                    placeholder="Describe the cut, clarity, and unique patterns..."
-                  ></textarea>
+                  <div className="bg-white">
+                    <textarea 
+                      value={productForm.description} 
+                      onChange={(e) => setProductForm({...productForm, description: e.target.value})}
+                      className="w-full min-h-[200px] p-4 border border-[#1a1a1a]/10 focus:border-[#1a1a1a] outline-none font-sans text-sm resize-y"
+                      placeholder="Describe the cut, clarity, and unique patterns..."
+                    />
+                  </div>
                 </div>
 
                 <div>

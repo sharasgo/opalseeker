@@ -4,6 +4,7 @@ import './globals.css';
 import { CartProvider } from '@/components/CartContext';
 import CartDrawer from '@/components/CartDrawer';
 import { AuthProvider } from '@/components/AuthProvider';
+import Footer from '@/components/Footer';
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-sans' });
 const cormorantGaramond = Cormorant_Garamond({ 
@@ -29,6 +30,7 @@ export default function RootLayout({
         <AuthProvider>
           <CartProvider>
             {children}
+            <Footer />
             <CartDrawer />
           </CartProvider>
         </AuthProvider>

@@ -14,8 +14,8 @@ export default function Home() {
   const [homeContent, setHomeContent] = useState<any>({
     heroTitleLine1: 'Australian',
     heroTitleLine2: 'Opals',
-    heroSubtitle: "Ethically sourced, masterfully cut. We bring the world's most magnificent black opals directly from Lightning Ridge to you.",
-    heroBackgroundImage: 'https://picsum.photos/seed/blackopaldirect-hero/1920/1080',
+    heroSubtitle: "",
+    heroBackgroundImage: '',
     founderMessage: "\"My name is Justin, and I've been mining and cutting opals all my life. We're based in Lightning Ridge, the home of the Black Opal. When you buy from OpalSeeker, you're buying directly from the source. No middlemen, just beautiful, ethically sourced, solid Australian opals.\""
   });
 
@@ -45,21 +45,25 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative w-full h-[85vh] flex items-end pb-16 px-6 md:px-16 border-b border-[#1a1a1a]/20">
         <div className="absolute inset-0 z-0 overflow-hidden">
-          {homeContent.heroBackgroundImage && (homeContent.heroBackgroundImage.startsWith('data:video') || homeContent.heroBackgroundImage.includes('#video')) ? (
-            <video 
-              src={homeContent.heroBackgroundImage} 
-              autoPlay loop muted playsInline
-              className="w-full h-full object-cover transition-transform duration-[3s] hover:scale-105"
-            />
+          {homeContent.heroBackgroundImage ? (
+            (homeContent.heroBackgroundImage.startsWith('data:video') || homeContent.heroBackgroundImage.includes('#video')) ? (
+              <video 
+                src={homeContent.heroBackgroundImage} 
+                autoPlay loop muted playsInline
+                className="w-full h-full object-cover transition-transform duration-[3s] hover:scale-105"
+              />
+            ) : (
+              <Image
+                src={homeContent.heroBackgroundImage}
+                alt="OpalSeeker"
+                fill
+                className="object-cover transition-transform duration-[3s] hover:scale-105"
+                priority
+                referrerPolicy="no-referrer"
+              />
+            )
           ) : (
-            <Image
-              src={homeContent.heroBackgroundImage}
-              alt="OpalSeeker"
-              fill
-              className="object-cover transition-transform duration-[3s] hover:scale-105"
-              priority
-              referrerPolicy="no-referrer"
-            />
+            <div className="w-full h-full bg-[#1a1a1a]" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         </div>
