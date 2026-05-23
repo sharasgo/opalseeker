@@ -14,8 +14,8 @@ export default function Home() {
   const [homeContent, setHomeContent] = useState<any>({
     heroTitleLine1: 'Australian',
     heroTitleLine2: 'Opals',
-    heroSubtitle: "",
-    heroBackgroundImage: '',
+    heroSubtitle: "Ethically sourced, masterfully cut. We bring the world's most magnificent black opals directly from Lightning Ridge to you.",
+    heroBackgroundImage: 'https://picsum.photos/seed/blackopaldirect-hero/1920/1080',
     founderMessage: "\"My name is Justin, and I've been mining and cutting opals all my life. We're based in Lightning Ridge, the home of the Black Opal. When you buy from OpalSeeker, you're buying directly from the source. No middlemen, just beautiful, ethically sourced, solid Australian opals.\""
   });
 
@@ -45,25 +45,21 @@ export default function Home() {
       {/* Hero Section */}
       <section className="relative w-full h-[85vh] flex items-end pb-16 px-6 md:px-16 border-b border-[#1a1a1a]/20">
         <div className="absolute inset-0 z-0 overflow-hidden">
-          {homeContent.heroBackgroundImage ? (
-            (homeContent.heroBackgroundImage.startsWith('data:video') || homeContent.heroBackgroundImage.includes('#video')) ? (
-              <video 
-                src={homeContent.heroBackgroundImage} 
-                autoPlay loop muted playsInline
-                className="w-full h-full object-cover transition-transform duration-[3s] hover:scale-105"
-              />
-            ) : (
-              <Image
-                src={homeContent.heroBackgroundImage}
-                alt="OpalSeeker"
-                fill
-                className="object-cover transition-transform duration-[3s] hover:scale-105"
-                priority
-                referrerPolicy="no-referrer"
-              />
-            )
+          {homeContent.heroBackgroundImage && (homeContent.heroBackgroundImage.startsWith('data:video') || homeContent.heroBackgroundImage.includes('#video')) ? (
+            <video 
+              src={homeContent.heroBackgroundImage} 
+              autoPlay loop muted playsInline
+              className="w-full h-full object-cover transition-transform duration-[3s] hover:scale-105"
+            />
           ) : (
-            <div className="w-full h-full bg-[#1a1a1a]" />
+            <Image
+              src={homeContent.heroBackgroundImage}
+              alt="OpalSeeker"
+              fill
+              className="object-cover transition-transform duration-[3s] hover:scale-105"
+              priority
+              referrerPolicy="no-referrer"
+            />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
         </div>
@@ -117,46 +113,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Categories Grid - Recipe 12 Style */}
-      <motion.section 
-        initial={{ opacity: 0 }}
-        whileInView={{ opacity: 1 }}
-        viewport={{ once: true, margin: "-100px" }}
-        transition={{ duration: 1 }}
-        className="border-b border-[#1a1a1a]/20 grid grid-cols-2 md:grid-cols-4 bg-[#fcfbf9]"
-      >
-        <Link href="/collection" className="flex flex-col justify-between aspect-square md:aspect-[3/2] border-r border-b md:border-b-0 border-[#1a1a1a]/10 p-6 md:p-10 group hover:bg-[#1a1a1a] hover:text-white transition-colors duration-300">
-          <span className="text-[10px] uppercase tracking-[0.2em] opacity-50 group-hover:opacity-70">01</span>
-          <div>
-            <h3 className="font-serif text-2xl md:text-3xl font-light">Solid Opals</h3>
-            <p className="text-[10px] uppercase tracking-[0.2em] mt-4 opacity-60 group-hover:opacity-80">Shop collection</p>
-          </div>
-        </Link>
-        <Link href="/collection" className="flex flex-col justify-between aspect-square md:aspect-[3/2] border-r border-[#1a1a1a]/10 p-6 md:p-10 group hover:bg-[#1a1a1a] hover:text-white transition-colors duration-300">
-          <span className="text-[10px] uppercase tracking-[0.2em] opacity-50 group-hover:opacity-70">02</span>
-          <div>
-             <h3 className="font-serif text-2xl md:text-3xl font-light">Rough Opals</h3>
-             <p className="text-[10px] uppercase tracking-[0.2em] mt-4 opacity-60 group-hover:opacity-80">Shop collection</p>
-          </div>
-        </Link>
-        <Link href="/collection" className="flex flex-col justify-between aspect-square md:aspect-[3/2] border-r border-b border-[#1a1a1a]/10 md:border-b-0 p-6 md:p-10 group hover:bg-[#1a1a1a] hover:text-white transition-colors duration-300">
-          <span className="text-[10px] uppercase tracking-[0.2em] opacity-50 group-hover:opacity-70">03</span>
-          <div>
-             <h3 className="font-serif text-2xl md:text-3xl font-light">Fine Jewelry</h3>
-             <p className="text-[10px] uppercase tracking-[0.2em] mt-4 opacity-60 group-hover:opacity-80">Shop collection</p>
-          </div>
-        </Link>
-        <Link href="/education" className="flex flex-col justify-between aspect-square md:aspect-[3/2] p-6 md:p-10 group hover:bg-[#1a1a1a] hover:text-white transition-colors duration-300">
-          <span className="text-[10px] uppercase tracking-[0.2em] opacity-50 group-hover:opacity-70">04</span>
-          <div>
-             <h3 className="font-serif text-2xl md:text-3xl font-light italic">Masterclass</h3>
-             <p className="text-[10px] uppercase tracking-[0.2em] mt-4 opacity-60 group-hover:opacity-80">Learn more</p>
-          </div>
-        </Link>
-      </motion.section>
-
       {/* Featured Collection */}
-      <section className="py-16 md:py-32 px-6 md:px-12 max-w-[1800px] mx-auto border-b border-[#1a1a1a]/20 overflow-hidden">
+      <section className="pt-10 pb-16 md:pb-32 px-6 md:px-12 max-w-[1800px] mx-auto border-b border-[#1a1a1a]/20 overflow-hidden">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -315,53 +273,6 @@ export default function Home() {
         </motion.div>
       </section>
 
-      {/* Footer */}
-      <footer className="bg-[#fcfbf9] text-[#1a1a1a] pt-24 md:pt-32 pb-12 px-6 md:px-12 border-t border-[#1a1a1a]/10">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-16 md:gap-8 mb-24">
-          <div className="md:col-span-1">
-            <h3 className="font-serif text-3xl mb-6 tracking-tight">OpalSeeker</h3>
-            <p className="text-[#1a1a1a]/60 text-sm leading-relaxed mb-6 font-light max-w-xs">
-              The Finest Australian Opal from Lightning Ridge, curated for the discerning collector.
-            </p>
-          </div>
-          
-          <div>
-            <h4 className="font-sans font-medium uppercase tracking-[0.2em] text-[9px] mb-8 text-[#1a1a1a]/40">Shop</h4>
-            <ul className="space-y-4">
-              <li><Link href="/collection" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">Solid Black Opals</Link></li>
-              <li><Link href="/collection" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">Boulder Opals</Link></li>
-              <li><Link href="/collection" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">Crystal Opals</Link></li>
-              <li><Link href="/collection" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">Fine Jewelry</Link></li>
-              <li><Link href="/collection" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">Rough Opals</Link></li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="font-sans font-medium uppercase tracking-[0.2em] text-[9px] mb-8 text-[#1a1a1a]/40">Support</h4>
-            <ul className="space-y-4">
-              <li><Link href="/contact" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">Contact Us</Link></li>
-              <li><Link href="/faq" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">FAQ</Link></li>
-              <li><Link href="/shipping" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">Shipping</Link></li>
-              <li><Link href="/returns" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">Returns</Link></li>
-            </ul>
-          </div>
-          
-          <div>
-            <h4 className="font-sans font-medium uppercase tracking-[0.2em] text-[9px] mb-8 text-[#1a1a1a]/40">Connect</h4>
-            <ul className="space-y-4">
-              <li><Link href="#" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">YouTube</Link></li>
-              <li><Link href="#" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">Instagram</Link></li>
-              <li><Link href="#" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">Facebook</Link></li>
-              <li><Link href="#" className="text-sm font-light hover:italic opacity-80 hover:opacity-100 transition-all">Pinterest</Link></li>
-            </ul>
-          </div>
-        </div>
-        
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center border-t border-[#1a1a1a]/10 pt-10 text-[10px] uppercase tracking-[0.2em] text-[#1a1a1a]/40">
-          <p>&copy; {new Date().getFullYear()} OpalSeeker.</p>
-          <p className="mt-4 md:mt-0">All rights reserved.</p>
-        </div>
-      </footer>
     </main>
   );
 }
