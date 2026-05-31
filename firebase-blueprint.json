@@ -1,63 +1,58 @@
 {
   "entities": {
-    "User": {
-      "title": "User",
-      "description": "User profile containing roles and preferences.",
+    "OpalProduct": {
+      "title": "Opal Product",
+      "description": "An authentic Australian opal gemstone listed in the boutique catalog.",
       "type": "object",
       "properties": {
-        "email": { "type": "string" },
-        "role": { "type": "string", "enum": ["customer", "admin"] },
-        "createdAt": { "type": "number", "description": "Timestamp" },
-        "updatedAt": { "type": "number", "description": "Timestamp" }
-      },
-      "required": ["email", "role", "createdAt", "updatedAt"]
-    },
-    "Product": {
-      "title": "Product",
-      "description": "Information about a product.",
-      "type": "object",
-      "properties": {
+        "id": { "type": "string" },
         "name": { "type": "string" },
-        "description": { "type": "string" },
-        "price": { "type": "number" },
-        "image": { "type": "string" },
+        "type": { "type": "string", "enum": ["Black Opal", "Boulder Opal", "Crystal Opal", "White Opal"] },
         "origin": { "type": "string" },
-        "type": { "type": "string" },
-        "createdAt": { "type": "number", "description": "Timestamp" },
-        "updatedAt": { "type": "number", "description": "Timestamp" }
+        "weight": { "type": "number" },
+        "dimensions": { "type": "string" },
+        "priceEur": { "type": "number" },
+        "priceUsd": { "type": "number" },
+        "bodyTone": { "type": "string" },
+        "brightness": { "type": "string" },
+        "shape": { "type": "string" },
+        "pattern": { "type": "string" },
+        "playOfColor": { "type": "string" },
+        "serialNumber": { "type": "string" },
+        "isRare": { "type": "boolean" },
+        "image": { "type": "string" },
+        "additionalImages": { "type": "array" },
+        "youtubeUrl": { "type": "string" }
       },
-      "required": ["name", "description", "price", "image", "origin", "type", "createdAt", "updatedAt"]
+      "required": ["id", "name", "type", "origin", "weight", "priceEur"]
     },
-    "Order": {
-      "title": "Order",
-      "description": "Order records for users.",
+    "OpalOrder": {
+      "title": "Opal Order",
+      "description": "A purchase record for one or more opal gemstones.",
       "type": "object",
       "properties": {
-        "userId": { "type": "string" },
-        "items": { 
-          "type": "array",
-          "items": { "type": "object" }
-        },
-        "totalAmount": { "type": "number" },
-        "status": { "type": "string", "enum": ["pending", "shipped", "delivered", "cancelled"] },
-        "createdAt": { "type": "number" },
-        "updatedAt": { "type": "number" }
+        "id": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerEmail": { "type": "string" },
+        "customerAddress": { "type": "string" },
+        "items": { "type": "array" },
+        "totalEur": { "type": "number" },
+        "totalUsd": { "type": "number" },
+        "paymentMethod": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "status": { "type": "string", "enum": ["Pending Delivery", "In Escrow Transit", "Delivered & Verified"] }
       },
-      "required": ["userId", "items", "totalAmount", "status", "createdAt", "updatedAt"]
+      "required": ["id", "customerName", "customerEmail", "items", "totalEur", "status"]
     }
   },
   "firestore": {
-    "/users/{userId}": {
-      "schema": { "$ref": "#/entities/User" },
-      "description": "User profiles. Editable only by self (if properties allow) or admin. Role cannot be self-escalated."
+    "products/{productId}": {
+      "schema": "OpalProduct",
+      "description": "A collection of high-grade Australian opals available for purchase."
     },
-    "/products/{productId}": {
-      "schema": { "$ref": "#/entities/Product" },
-      "description": "Available products. Readers: all. Writers: admins only."
-    },
-    "/orders/{orderId}": {
-      "schema": { "$ref": "#/entities/Order" },
-      "description": "User orders. Readers/Writers: user (owner) and admins."
+    "orders/{orderId}": {
+      "schema": "OpalOrder",
+      "description": "A ledger of completed sales transactions."
     }
   }
 }

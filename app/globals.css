@@ -1,14 +1,14 @@
 @import "tailwindcss";
-@plugin "@tailwindcss/typography";
 
 @theme {
-  --font-sans: var(--font-sans);
-  --font-serif: var(--font-serif);
+  --font-sans: var(--font-sans), system-ui;
+  --font-display: var(--font-display), monospace;
 }
 
-@layer utilities {
-  .writing-vertical-rl {
-    writing-mode: vertical-rl;
-    text-orientation: mixed;
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
 }
+

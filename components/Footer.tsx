@@ -1,78 +1,111 @@
+'use client';
+
+import React from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { Facebook, Instagram, Twitter } from 'lucide-react';
+import { Mail, Instagram, Twitter, MapPin, ShieldCheck, Truck } from 'lucide-react';
 
 export default function Footer() {
   return (
-    <footer className="bg-[#1a1a1a] text-white/70 py-16 px-6 md:px-12 font-sans">
-      <div className="max-w-[1400px] mx-auto grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
-        
-        {/* Brand */}
-        <div className="md:col-span-1">
-          <h3 className="font-serif text-2xl text-white mb-6 tracking-wide">OpalSeeker</h3>
-          <p className="text-[13px] font-light leading-relaxed mb-6">
-            Direct from Lightning Ridge. Ethically sourced, solid Australian opals crafted into heirlooms.
-          </p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-white transition-colors" aria-label="Instagram">
-              <Instagram className="w-5 h-5" strokeWidth={1.5} />
-            </a>
-            <a href="#" className="hover:text-white transition-colors" aria-label="Facebook">
-              <Facebook className="w-5 h-5" strokeWidth={1.5} />
-            </a>
-            <a href="#" className="hover:text-white transition-colors" aria-label="Twitter">
-              <Twitter className="w-5 h-5" strokeWidth={1.5} />
-            </a>
+    <footer className="w-full bg-[#080808] pt-16 pb-8 px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+          {/* Brand section */}
+          <div className="space-y-6">
+            <div className="flex items-center space-x-3">
+              <div className="h-8 w-8 bg-white/5 flex items-center justify-center overflow-hidden">
+                <Image 
+                  src="/icon.png" 
+                  alt="Opal Seeker Logo" 
+                  width={32} 
+                  height={32}
+                  className="object-cover"
+                />
+              </div>
+              <span className="text-xl font-display font-light tracking-widest uppercase">Opal<span className="font-bold text-white">Seeker</span></span>
+            </div>
+            <p className="text-sm text-white/40 leading-relaxed font-light">
+              Direct from the source. We provide the world&apos;s most exquisite Australian opals, 
+              meticulously selected for their unique play-of-color and investment-grade quality.
+            </p>
+            <div className="flex space-x-4">
+              <a href="#" className="p-2 bg-white/5 rounded-none hover:bg-white/10 transition-colors">
+                <Instagram className="h-4 w-4 text-white/60" />
+              </a>
+              <a href="#" className="p-2 bg-white/5 rounded-none hover:bg-white/10 transition-colors">
+                <Twitter className="h-4 w-4 text-white/60" />
+              </a>
+            </div>
+          </div>
+
+          {/* Quick Links */}
+          <div className="space-y-6">
+            <h4 className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">Curation</h4>
+            <ul className="space-y-3">
+              {['Black Opals', 'Boulder Opals', 'Crystal Opals', 'New Arrivals', 'Investment Class'].map((item) => (
+                <li key={item}>
+                  <a href="#" className="text-sm text-white/60 hover:text-cyan-400 transition-colors font-light">
+                    {item}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Service */}
+          <div className="space-y-6">
+            <h4 className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">Service</h4>
+            <ul className="space-y-3">
+              {[
+                { name: 'Shipping Policy', href: '/shipping-policy' },
+                { name: 'Returns & Refunds', href: '/returns-and-refunds' },
+                { name: 'Privacy Policy', href: '/privacy-policy' },
+                { name: 'Terms of Service', href: '/terms-of-service' },
+                { name: 'Contact Us', href: '/contact-us' }
+              ].map((item) => (
+                <li key={item.name}>
+                  <Link href={item.href} className="text-sm text-white/60 hover:text-cyan-400 transition-colors font-light">
+                    {item.name}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Contact & Trust */}
+          <div className="space-y-6">
+            <h4 className="text-[10px] font-bold text-white/20 uppercase tracking-[0.2em]">Global Presence</h4>
+            <div className="space-y-4">
+              <div className="flex items-start space-x-3 group">
+                <MapPin className="h-4 w-4 text-cyan-400 mt-1" />
+                <span className="text-sm text-white/60 font-light">Lightning Ridge, <br/>NSW Australia</span>
+              </div>
+              <div className="flex items-center space-x-3">
+                <Mail className="h-4 w-4 text-cyan-400" />
+                <a href="mailto:concierge@opalseeker.com" className="text-sm text-white/60 hover:text-white transition-colors font-light">
+                  concierge@opalseeker.com
+                </a>
+              </div>
+            </div>
+            
+            <div className="pt-4 space-y-3">
+              <div className="flex items-center space-x-2 text-[10px] text-white/30 uppercase tracking-widest">
+                <ShieldCheck className="h-3 w-3 text-cyan-400/50" />
+                <span>Insured Global Logistics</span>
+              </div>
+              <div className="flex items-center space-x-2 text-[10px] text-white/30 uppercase tracking-widest">
+                <Truck className="h-3 w-3 text-cyan-400/50" />
+                <span>Express DHL Delivery</span>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Shop */}
-        <div className="md:col-span-1">
-          <h4 className="text-[11px] uppercase tracking-widest text-white font-medium mb-6">Shop</h4>
-          <ul className="space-y-4 text-[13px] font-light">
-            <li><Link href="/collection" className="hover:text-white transition-colors">All Opals</Link></li>
-            <li><Link href="/collection" className="hover:text-white transition-colors">Black Opals</Link></li>
-            <li><Link href="/collection" className="hover:text-white transition-colors">Boulder Opals</Link></li>
-            <li><Link href="/collection" className="hover:text-white transition-colors">Crystal Opals</Link></li>
-          </ul>
-        </div>
-
-        {/* Customer Care */}
-        <div className="md:col-span-1">
-          <h4 className="text-[11px] uppercase tracking-widest text-white font-medium mb-6">Customer Care</h4>
-          <ul className="space-y-4 text-[13px] font-light">
-            <li><Link href="/contact" className="hover:text-white transition-colors">Contact Us</Link></li>
-            <li><Link href="/shipping" className="hover:text-white transition-colors">Shipping & Delivery</Link></li>
-            <li><Link href="/returns" className="hover:text-white transition-colors">Returns & Refunds</Link></li>
-            <li><Link href="/faq" className="hover:text-white transition-colors">FAQ</Link></li>
-            <li><Link href="/education" className="hover:text-white transition-colors">Opal Education</Link></li>
-          </ul>
-        </div>
-
-        {/* Newsletter */}
-        <div className="md:col-span-1">
-          <h4 className="text-[11px] uppercase tracking-widest text-white font-medium mb-6">Newsletter</h4>
-          <p className="text-[13px] font-light leading-relaxed mb-4">
-            Subscribe to receive updates, access to exclusive deals, and more.
+        {/* Bottom bar */}
+        <div className="pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
+          <p className="text-[10px] font-mono text-white/20 tracking-widest uppercase text-center w-full">
+            © {new Date().getFullYear()} Opal Seeker Boutique. All Rights Reserved.
           </p>
-          <form className="flex border-b border-white/30 pb-2 transition-colors focus-within:border-white">
-            <input 
-              type="email" 
-              placeholder="Enter your email address" 
-              className="bg-transparent border-none outline-none w-full text-[13px] font-light text-white placeholder-white/50"
-            />
-            <button type="submit" className="text-[10px] uppercase tracking-widest text-white ml-2 hover:opacity-70 transition-opacity whitespace-nowrap">
-              Subscribe
-            </button>
-          </form>
-        </div>
-
-      </div>
-
-      <div className="max-w-[1400px] mx-auto mt-16 pt-8 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-4 text-[11px] font-light text-white/50">
-        <p>&copy; {new Date().getFullYear()} OpalSeeker. All rights reserved.</p>
-        <div className="flex gap-6">
-          <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-          <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
         </div>
       </div>
     </footer>

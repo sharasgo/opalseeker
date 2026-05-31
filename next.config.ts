@@ -2,7 +2,9 @@ import type {NextConfig} from 'next';
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
-  turbopack: {},
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
   typescript: {
     ignoreBuildErrors: false,
   },
@@ -14,12 +16,6 @@ const nextConfig: NextConfig = {
         hostname: 'picsum.photos',
         port: '',
         pathname: '/**', // This allows any path under the hostname
-      },
-      {
-        protocol: 'https',
-        hostname: 'firebasestorage.googleapis.com',
-        port: '',
-        pathname: '/**', // This allows any path from Firebase Storage
       },
     ],
   },
